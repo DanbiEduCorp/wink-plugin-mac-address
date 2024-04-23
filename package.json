@@ -1,6 +1,6 @@
 {
-  "name": "com-badrit-macaddress",
-  "version": "0.2.1",
+  "name": "@danbieducorp/wink-plugin-mac-address",
+  "version": "0.2.2",
   "description": "Cordova MacAddress Plugin",
   "cordova": {
     "id": "com-badrit-macaddress",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mohamed-salah/MacAddress"
+    "url": "https://github.com/DanbiEduCorp/wink-plugin-mac-address.git"
   },
   "keywords": [
     "cordova",
@@ -20,5 +20,8 @@
     "cordova-android",
     "cordova-ios"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
 }
