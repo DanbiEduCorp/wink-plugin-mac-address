@@ -2,12 +2,15 @@ package com.badrit.MacAddress;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.LOG;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 
@@ -20,6 +23,7 @@ import java.util.List;
  */
 public class MacAddressPlugin extends CordovaPlugin {
 
+    public static String TAG = "MacAddressPlugin";
     public boolean isSynch(String action) {
         if (action.equals("getMacAddress")) {
             return true;
@@ -29,7 +33,7 @@ public class MacAddressPlugin extends CordovaPlugin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.cordova.api.Plugin#execute(java.lang.String,
      * org.json.JSONArray, java.lang.String)
      */
@@ -66,22 +70,26 @@ public class MacAddressPlugin extends CordovaPlugin {
 
     /**
      * Gets the mac address.
-     * 
+     *
      * @return the mac address
      */
     private String getMacAddress() {
 
-        if (Build.VERSION.SDK_INT >= 23) { // Build.VERSION_CODES.M
+        if (Build.VERSION.SDK_INT >= 31) {
+            String address = get12MacAddress();
+            LOG.d(TAG, "in get12macaddress " + address);
+            return address;
+        } else if (Build.VERSION.SDK_INT >= 23) { // Build.VERSION_CODES.M
             return getMMacAddress();
         }
-        
+
         return getLegacyMacAddress();
 
     }
 
     /**
      * Gets the mac address on version < Marshmallow.
-     * 
+     *
      * @return the mac address
      */
     private String getLegacyMacAddress() {
@@ -101,7 +109,7 @@ public class MacAddressPlugin extends CordovaPlugin {
 
     /**
      * Gets the mac address on version >= Marshmallow.
-     * 
+     *
      * @return the mac address
      */
     private String getMMacAddress() {
@@ -131,5 +139,25 @@ public class MacAddressPlugin extends CordovaPlugin {
         } catch (Exception ex) { }
 
         return "02:00:00:00:00:00";
+    }
+
+    private String get12MacAddress() {
+        String rst = "";
+        try {
+            Uri uri = Uri.parse("content://com.danbiedu.device.info.provider/mac_address");
+            String[] columns = {"RETURN_VALUE"};
+            Cursor cursor = webView.getContext().getContentResolver().query(uri, columns, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                String str = cursor.getString(cursor.getColumnIndexOrThrow("RETURN_VALUE"));
+                rst = str;
+                cursor.close();
+            } else {
+                LOG.i(TAG, " cursor is null");
+            }
+        } catch (Exception e) {
+            LOG.i(TAG, " get12MacAddress error " + e.getMessage());
+        }
+        return rst;
     }
 }
