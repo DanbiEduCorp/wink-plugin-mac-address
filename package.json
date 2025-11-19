@@ -1,6 +1,6 @@
 {
   "name": "@danbieducorp/wink-plugin-mac-address",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Cordova MacAddress Plugin",
   "cordova": {
     "id": "com-badrit-macaddress",
